@@ -2,9 +2,10 @@ version: '3.5'
 
 services:
   restaurantlisting_db:
+    container_name: restaurantlisting_db
     image: mysql:latest
     volumes:
-      - database_mysql:/var/lib/mysql
+      - "./data:/var/lib/mysql:rw"
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: restaurantlisting
@@ -12,7 +13,5 @@ services:
       MYSQL_PASSWORD: admin
     restart: unless-stopped
     ports:
-      - "127.0.0.1:3333:3333"
+      - "3308:3306"
 
-volumes:
-  database_mysql:
