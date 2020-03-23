@@ -11,7 +11,7 @@ brew cask install docker
 Install MySQL container
 
 ```
-docker up -d
+docker-compose up -d
 ```
 
 Install MySQL-Driver:
