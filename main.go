@@ -2,11 +2,15 @@ package main
 
 import (
 	"fmt"
-	"github.com/zawarudosaltydev/restaurantlisting/controllers"
 	"net/http"
+
+	"github.com/zawarudosaltydev/restaurantlisting/controllers"
+	"github.com/zawarudosaltydev/restaurantlisting/models"
 )
 
 func main() {
+	models.InitDB("admin:admin@tcp(localhost:3308)/restaurantlisting")
+
 	// Route Handlers / Endpoints
 	http.HandleFunc("/api/restaurants", controllers.Index)
 	http.HandleFunc("/", controllers.Welcome)

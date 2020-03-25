@@ -7,9 +7,12 @@ import (
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
-	// Mock Data - @todo - implement DB
-	restaurant := models.Restaurant{ID: "1", Name: "Swatow"}
-	restaurants := []models.Restaurant{restaurant}
+	restaurants, err := models.AllRestaurants()
+
+	if err != nil {
+		http.Error(w, http.StatusText(500), 500)
+		return
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(restaurants)
