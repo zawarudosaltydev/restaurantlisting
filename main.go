@@ -16,7 +16,7 @@ func main() {
 	models.InitDB("admin:admin@tcp(localhost:3308)/restaurantlisting")
 
 	// Route Handlers / Endpoints
-	http.HandleFunc("/api/restaurants", controllers.GetAllRestaurants)
+	http.HandleFunc("/api/restaurants", controllers.Index)
 
 	err := http.ListenAndServe(PORT, nil)
 	if err != nil {

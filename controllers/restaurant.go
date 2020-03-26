@@ -8,8 +8,7 @@ import (
 	"github.com/zawarudosaltydev/restaurantlisting/models"
 )
 
-// GetAllRestaurants return all the restaurants
-func GetAllRestaurants(w http.ResponseWriter, r *http.Request) {
+func Index(w http.ResponseWriter, r *http.Request) {
 	restaurants, err := models.AllRestaurants()
 
 	if err != nil {
