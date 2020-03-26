@@ -8,9 +8,7 @@ import (
 	"github.com/zawarudosaltydev/restaurantlisting/models"
 )
 
-const (
-	PORT = ":8080"
-)
+const PORT = ":8080"
 
 func main() {
 	models.InitDB("admin:admin@tcp(localhost:3308)/restaurantlisting")
