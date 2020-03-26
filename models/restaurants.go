@@ -1,20 +1,21 @@
 package models
 
-import "fmt"
+import (
+	"database/sql"
+	"fmt"
+)
 
 // Restaurant data struct
 type Restaurant struct {
-	ID        string `json:"id"`
-	CreatedAt string `json:"created_at"`
-	UpdatedAt string `json:"updated_at"`
-	Name      string `json:"name"`
-	Address   string `json:"address"`
-	Number    string `json:"number"`
+	ID      int            `json:"id"`
+	Name    string         `json:"name"`
+	Address string         `json:"address"`
+	Number  sql.NullString `json:"number"`
 }
 
 // AllRestaurants return all the restaurant from database
 func AllRestaurants() ([]Restaurant, error) {
-	rows, err := db.Query("SELECT * FROM restaurants")
+	rows, err := db.Query("SELECT id, name, address, number FROM restaurants")
 	if err != nil {
 		fmt.Printf(err.Error())
 		return nil, err
@@ -26,8 +27,6 @@ func AllRestaurants() ([]Restaurant, error) {
 		rt := Restaurant{}
 		err := rows.Scan(
 			&rt.ID,
-			&rt.CreatedAt,
-			&rt.UpdatedAt,
 			&rt.Name,
 			&rt.Address,
 			&rt.Number,
