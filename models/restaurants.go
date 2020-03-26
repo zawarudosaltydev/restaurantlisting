@@ -10,18 +10,12 @@ type Restaurant struct {
 
 // AllRestaurants return all the restaurant from database
 func AllRestaurants() ([]Restaurant, error) {
-	stmt, err := db.Prepare("SELECT id, name FROM restaurants")
+	rows, err := db.Query("SELECT id, name FROM restaurants")
 	if err != nil {
 		fmt.Printf(err.Error())
 		return nil, err
 	}
-	defer stmt.Close()
-
-	rows, err := stmt.Query()
-	if err != nil {
-		fmt.Printf(err.Error())
-		return nil, err
-	}
+	defer rows.Close()
 
 	rts := make([]Restaurant, 0)
 	for rows.Next() {
