@@ -8,15 +8,17 @@ import (
 	"github.com/zawarudosaltydev/restaurantlisting/models"
 )
 
+const (
+	PORT = ":8080"
+)
+
 func main() {
 	models.InitDB("admin:admin@tcp(localhost:3308)/restaurantlisting")
 
 	// Route Handlers / Endpoints
-	http.HandleFunc("/api/restaurants", controllers.Index)
-	http.HandleFunc("/", controllers.Welcome)
+	http.HandleFunc("/api/restaurants", controllers.GetAllRestaurants)
 
-	err := http.ListenAndServe(":8080", nil)
-
+	err := http.ListenAndServe(PORT, nil)
 	if err != nil {
 		fmt.Printf("Failed to start server: %s\n", err.Error())
 		panic(err)
