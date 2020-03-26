@@ -4,13 +4,17 @@ import "fmt"
 
 // Restaurant data struct
 type Restaurant struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID        string `json:"id"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
+	Name      string `json:"name"`
+	Address   string `json:"address"`
+	Number    string `json:"number"`
 }
 
 // AllRestaurants return all the restaurant from database
 func AllRestaurants() ([]Restaurant, error) {
-	rows, err := db.Query("SELECT id, name FROM restaurants")
+	rows, err := db.Query("SELECT * FROM restaurants")
 	if err != nil {
 		fmt.Printf(err.Error())
 		return nil, err
@@ -20,7 +24,14 @@ func AllRestaurants() ([]Restaurant, error) {
 	rts := make([]Restaurant, 0)
 	for rows.Next() {
 		rt := Restaurant{}
-		err := rows.Scan(&rt.ID, &rt.Name)
+		err := rows.Scan(
+			&rt.ID,
+			&rt.CreatedAt,
+			&rt.UpdatedAt,
+			&rt.Name,
+			&rt.Address,
+			&rt.Number,
+		)
 		if err != nil {
 			fmt.Printf(err.Error())
 			return nil, err
