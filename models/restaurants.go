@@ -18,7 +18,7 @@ type Restaurant struct {
 
 // AllRestaurants return all the restaurant from database
 func AllRestaurants() ([]Restaurant, error) {
-	rows, err := db.Query("SELECT id, name, address, number, created_at, updated_at FROM restaurants")
+	rows, err := db.Query("SELECT * FROM restaurants")
 	if err != nil {
 		fmt.Printf(err.Error())
 		return nil, err
