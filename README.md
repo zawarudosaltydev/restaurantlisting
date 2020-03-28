@@ -1,17 +1,31 @@
-# restaurantlisting
+# RestaurantListing
+
+## Endpoints
+```
+GET  /api/restaurants      # Get all restaurants
+GET  /api/restaurants/:id  # Get a restaurant
+POST /api/restaurants      # Create restaurant
+POST /api/restaurants/:id  # Update restaurant
+```
+
+## TODO
+- [x] Get all restaurants
+- [ ] Get a restaurant
+- [ ] Create a restaurant
+- [ ] Update a restaurant
 
 ## Development
-
-Install MySQL-Driver:
+Setup docker container
 ```
-go get -u github.com/go-sql-driver/mysql
-```
-
-Run MySQL(version 5.7)
-```
-docker run --name mysql -p 3308:3306 -e MYSQL_ROOT_PASSWORD=[my-secret-pw] -d mysql:5.7
+docker-compose up -d
 ```
 
+Setup database
+```
+./init_mysql.sh
+```
+
+Server address:
 ```
 localhost:8080
 ```
