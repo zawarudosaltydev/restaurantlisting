@@ -4,14 +4,15 @@ import (
 	"net/http"
 )
 
-// MiddlewareFunc is a middleware http HandlerFunc which also return a new http HandlerFunc, so they can pass to next
+// MiddlewareFunc is a middleware http HandlerFunc which also return next http HandlerFunc
 type MiddlewareFunc func(http.HandlerFunc) http.HandlerFunc
 
+// MiddleWares contains a slice of MiddlewareFunc
 type MiddleWares struct {
 	middlewareFuns []MiddlewareFunc
 }
 
-// CreateMiddleWares will return a chain of middleware func
+// CreateMiddleWares will append middleware to MiddleWares
 func CreateMiddleWares(funcs ...MiddlewareFunc) MiddleWares {
 	middlewarefuns := []MiddlewareFunc{}
 	return MiddleWares{
@@ -19,10 +20,12 @@ func CreateMiddleWares(funcs ...MiddlewareFunc) MiddleWares {
 	}
 }
 
-// Run the real HandlerFunc
+// Run the all the middlewares, starts from the real HandlerFunc
+// and will be warpped by previous one, so the first one will be
+// at the beginning, which make sure runs in order.
 func (mw MiddleWares) Run(h http.HandlerFunc) http.HandlerFunc {
 	if h == nil {
-		h = http.DefaultServeMux.ServeHTTP
+		return http.DefaultServeMux.ServeHTTP
 	}
 
 	for i := range mw.middlewareFuns {
