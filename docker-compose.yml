@@ -1,0 +1,15 @@
+version: '3.7'
+services:
+  zawarudo:
+    image: mysql:latest
+    volumes:
+      - ./docker/data:/var/lib/mysql
+      - ./docker/sql:/docker-entrypoint-initdb.d/
+    ports:
+      - 3308:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+      MYSQL_DATABASE: restaurantlisting
+      container_name: rl-dev
