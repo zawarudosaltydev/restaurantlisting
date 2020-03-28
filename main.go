@@ -11,7 +11,7 @@ import (
 const PORT = ":8080"
 
 func main() {
-	models.InitDB("admin:admin@tcp(localhost:3308)/restaurantlisting")
+	models.InitDB("admin:admin@tcp(localhost:3308)/restaurantlisting?parseTime=true")
 
 	// Route Handlers / Endpoints
 	http.HandleFunc("/api/restaurants", controllers.Index)
