@@ -49,3 +49,29 @@ func AllRestaurants() ([]Restaurant, error) {
 	}
 	return rts, nil
 }
+
+// OneRestaurant will return the Restaurant by id
+func OneRestaurant(id string) (Restaurant, error) {
+	rt := Restaurant{}
+	stmt, err := db.Prepare("Select * from restaurants where id = ? limit 1")
+	if err != nil {
+		fmt.Println(err.Error())
+		return rt, err
+	}
+	defer stmt.Close()
+
+	err = stmt.QueryRow(id).Scan(
+		&rt.ID,
+		&rt.Name,
+		&rt.Address,
+		&rt.Number,
+		&rt.CreatedAt,
+		&rt.UpdatedAt,
+	)
+	if err != nil {
+		fmt.Println(err.Error())
+		return rt, err
+	}
+
+	return rt, nil
+}
