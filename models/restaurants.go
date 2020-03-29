@@ -53,7 +53,7 @@ func AllRestaurants() ([]Restaurant, error) {
 // OneRestaurant will return the Restaurant by id
 func OneRestaurant(id string) (Restaurant, error) {
 	rt := Restaurant{}
-	stmt, err := db.Prepare("Select * from restaurants where id = ? limit 1")
+	stmt, err := db.Prepare("SELECT * FROM restaurants WHERE id = ? LIMIT 1")
 	if err != nil {
 		fmt.Println(err.Error())
 		return rt, err

@@ -7,9 +7,9 @@ import (
 
 // RespMsg is general response body
 type RespMsg struct {
-	Code int `json:"code"`
-	Message string `json:"message"`
-	Data interface{} `json:"data`
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data`
 }
 
 // NewRespMsg creates a new RespMsg
