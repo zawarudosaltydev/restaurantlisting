@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
@@ -12,16 +11,20 @@ import (
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
+	resp := utils.NewRespMsg()
 	restaurants, err := models.AllRestaurants()
 
 	if err != nil {
 		fmt.Println(err.Error())
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		resp.Code = http.StatusInternalServerError
+		resp.Message = "server error"
+		w.Write(resp.JSONBytes())
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(restaurants)
+	resp.Code = http.StatusOK
+	resp.Data = restaurants
+	w.Write(resp.JSONBytes())
 }
 
 // GetRestaurant return one restaurant

@@ -22,9 +22,7 @@ func Log(h http.HandlerFunc) http.HandlerFunc {
 		duration := time.Now().Sub(startTime)
 
 		var message []interface{}
-		message = append(message, r.URL.Path)
-		message = append(message, r.Method)
-		message = append(message, duration)
+		message = append(message, r.URL.Path, r.Method, duration)
 		log.Printf("%v\n", message)
 	})
 }
