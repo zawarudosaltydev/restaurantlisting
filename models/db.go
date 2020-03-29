@@ -2,8 +2,9 @@ package models
 
 import (
 	"database/sql"
-	_ "github.com/go-sql-driver/mysql"
 	"log"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var db *sql.DB
@@ -14,6 +15,7 @@ func InitDB(dataSourceName string) {
 	if err != nil {
 		log.Panic(err)
 	}
+	db.SetMaxOpenConns(1000)
 
 	if err = db.Ping(); err != nil {
 		log.Panic(err)
