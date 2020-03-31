@@ -1,6 +1,7 @@
 package models
 
 import (
+	"database/sql"
 	"fmt"
 	"strings"
 	"time"
@@ -8,12 +9,12 @@ import (
 
 // Restaurant data struct
 type Restaurant struct {
-	ID        int       `json:"id"`
-	Name      string    `json:"name"`
-	Address   string    `json:"address"`
-	Number    string    `json:"number"` //json: cannot unmarshal string into Go struct field Restaurant.number of type sql.NullString
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID        int            `json:"id"`
+	Name      string         `json:"name"`
+	Address   string         `json:"address"`
+	Number    sql.NullString `json:"number"`
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
 }
 
 // AllRestaurants return all the restaurant from database
