@@ -19,6 +19,7 @@ func main() {
 	// Route Handlers / Endpoints
 	http.HandleFunc("/api/restaurants", middlewarechain.Run(controllers.Index))
 	http.HandleFunc("/api/restaurants/", middlewarechain.Run(controllers.Restaurant))
+	http.HandleFunc("/api/restaurant", middlewarechain.Run(controllers.CreateRestaurant))
 
 	err := http.ListenAndServe(PORT, nil)
 	if err != nil {

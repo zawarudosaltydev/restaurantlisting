@@ -28,8 +28,8 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	w.Write(resp.JSONBytes())
 }
 
-func getOneRestaurant(id string, resp *utils.RespMsg, w http.ResponseWriter) {
-	restaurant, err := models.GetOneRestaurant(id)
+func getRestaurant(id string, resp *utils.RespMsg, w http.ResponseWriter) {
+	restaurant, err := models.GetRestaurant(id)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			resp.Code = http.StatusNoContent
@@ -69,7 +69,7 @@ func Restaurant(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case http.MethodGet:
-		getOneRestaurant(id, resp, w)
+		getRestaurant(id, resp, w)
 	case http.MethodPut:
 		var body map[string]*string
 		err := json.NewDecoder(r.Body).Decode(&body)
@@ -87,4 +87,30 @@ func Restaurant(w http.ResponseWriter, r *http.Request) {
 		w.Write(resp.JSONBytes())
 	}
 
+}
+
+// CreateRestaurant will create a new restaurant
+func CreateRestaurant(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+
+	var restaurant models.Restaurant
+	err := json.NewDecoder(r.Body).Decode(&restaurant)
+	resp := utils.NewRespMsg()
+	if err != nil {
+		resp.Code = http.StatusInternalServerError
+		resp.Message = "create a restaurant failed"
+		w.Write(resp.JSONBytes())
+		return
+	}
+
+	err = models.CreateRestaurant(restaurant.Name, restaurant.Address, restaurant.Number.String)
+	if err != nil {
+		resp.Code = http.StatusInternalServerError
+		resp.Message = "create a restaurant failed"
+		w.Write(resp.JSONBytes())
+		return
+	}
+	resp.Code = http.StatusOK
+	resp.Message = "create a restaurant succeeded"
+	w.Write(resp.JSONBytes())
 }
