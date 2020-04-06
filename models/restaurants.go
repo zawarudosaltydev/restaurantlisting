@@ -3,7 +3,6 @@ package models
 import (
 	"database/sql"
 	"fmt"
-	"strings"
 	"time"
 )
 
@@ -78,24 +77,16 @@ func GetOneRestaurant(id string) (Restaurant, error) {
 }
 
 // UpdateOneRestaurant will access database to update the Restaurant by id
-func UpdateOneRestaurant(id string, body map[string]string) error {
-	var args []interface{}
-	sqlString := "UPDATE restaurants SET"
-	for k, v := range body {
-		sqlString += " " + k + "=?,"
-		args = append(args, v)
-	}
-	sqlString = strings.TrimSuffix(sqlString, ",") + " WHERE id=?"
-	args = append(args, id)
+func UpdateOneRestaurant(id string, body map[string]*string) error {
+	stmtIns, err := db.Prepare(`UPDATE restaurants
+		SET name = COALESCE(?, name),
+		address = COALESCE(?, address),
+		number = COALESCE(?, number)
+		WHERE id = ?`)
+	defer stmtIns.Close()
 
-	stmt, err := db.Prepare(sqlString)
-	if err != nil {
-		fmt.Println(err.Error())
-		return err
-	}
-	defer stmt.Close()
+	_, err = stmtIns.Exec(body["name"], body["address"], body["number"], id)
 
-	_, err = stmt.Exec(args...)
 	if err != nil {
 		fmt.Println(err.Error())
 		return err
