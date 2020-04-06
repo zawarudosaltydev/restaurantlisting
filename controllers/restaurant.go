@@ -11,8 +11,22 @@ import (
 	"github.com/zawarudosaltydev/restaurantlisting/utils"
 )
 
-func Index(w http.ResponseWriter, r *http.Request) {
+// IndexOrCreate will handle get all restaurants and create a new restaurant
+func IndexOrCreate(w http.ResponseWriter, r *http.Request) {
 	resp := utils.NewRespMsg()
+
+	switch r.Method {
+	case http.MethodGet:
+		getRestaurants(resp, w)
+	case http.MethodPost:
+		createRestaurant(resp, w, r)
+	default:
+		resp.Code = http.StatusMethodNotAllowed
+		w.Write(resp.JSONBytes())
+	}
+}
+
+func getRestaurants(resp *utils.RespMsg, w http.ResponseWriter) {
 	restaurants, err := models.AllRestaurants()
 
 	if err != nil {
