@@ -50,8 +50,8 @@ func AllRestaurants() ([]Restaurant, error) {
 	return rts, nil
 }
 
-// OneRestaurant will return the Restaurant by id
-func OneRestaurant(id string) (Restaurant, error) {
+// GetOneRestaurant will return the Restaurant by id
+func GetOneRestaurant(id string) (Restaurant, error) {
 	rt := Restaurant{}
 	stmt, err := db.Prepare("SELECT * FROM restaurants WHERE id = ? LIMIT 1")
 	if err != nil {
@@ -74,4 +74,23 @@ func OneRestaurant(id string) (Restaurant, error) {
 	}
 
 	return rt, nil
+}
+
+// UpdateOneRestaurant will access database to update the Restaurant by id
+func UpdateOneRestaurant(id string, body map[string]*string) error {
+	stmtIns, err := db.Prepare(`UPDATE restaurants
+		SET name = COALESCE(?, name),
+		address = COALESCE(?, address),
+		number = COALESCE(?, number)
+		WHERE id = ?`)
+	defer stmtIns.Close()
+
+	_, err = stmtIns.Exec(body["name"], body["address"], body["number"], id)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+
+	return nil
 }
