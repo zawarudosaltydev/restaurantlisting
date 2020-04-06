@@ -119,8 +119,6 @@ func Restaurant(w http.ResponseWriter, r *http.Request) {
 		getRestaurant(id, resp, w)
 	case http.MethodPut:
 		updateRestaurant(id, resp, w, r)
-	case http.MethodPost:
-		createRestaurant(resp, w, r)
 	case http.MethodDelete:
 	default:
 		resp.Code = http.StatusMethodNotAllowed
