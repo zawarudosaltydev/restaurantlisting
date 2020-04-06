@@ -17,7 +17,7 @@ func main() {
 	middlewarechain := middlewares.CreateMiddleWares(middlewares.Log, middlewares.SetHeader)
 
 	// Route Handlers / Endpoints
-	http.HandleFunc("/api/restaurants", middlewarechain.Run(controllers.Index))
+	http.HandleFunc("/api/restaurants", middlewarechain.Run(controllers.IndexOrCreate))
 	http.HandleFunc("/api/restaurants/", middlewarechain.Run(controllers.Restaurant))
 
 	err := http.ListenAndServe(PORT, nil)

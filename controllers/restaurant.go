@@ -11,8 +11,22 @@ import (
 	"github.com/zawarudosaltydev/restaurantlisting/utils"
 )
 
-func Index(w http.ResponseWriter, r *http.Request) {
+// IndexOrCreate will handle get all restaurants and create a new restaurant
+func IndexOrCreate(w http.ResponseWriter, r *http.Request) {
 	resp := utils.NewRespMsg()
+
+	switch r.Method {
+	case http.MethodGet:
+		getRestaurants(resp, w)
+	case http.MethodPost:
+		createRestaurant(resp, w, r)
+	default:
+		resp.Code = http.StatusMethodNotAllowed
+		w.Write(resp.JSONBytes())
+	}
+}
+
+func getRestaurants(resp *utils.RespMsg, w http.ResponseWriter) {
 	restaurants, err := models.AllRestaurants()
 
 	if err != nil {
@@ -28,8 +42,8 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	w.Write(resp.JSONBytes())
 }
 
-func getOneRestaurant(id string, resp *utils.RespMsg, w http.ResponseWriter) {
-	restaurant, err := models.GetOneRestaurant(id)
+func getRestaurant(id string, resp *utils.RespMsg, w http.ResponseWriter) {
+	restaurant, err := models.GetRestaurant(id)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			resp.Code = http.StatusNoContent
@@ -47,8 +61,17 @@ func getOneRestaurant(id string, resp *utils.RespMsg, w http.ResponseWriter) {
 	w.Write(resp.JSONBytes())
 }
 
-func updateOneRestaurant(id string, body map[string]*string, resp *utils.RespMsg, w http.ResponseWriter) {
-	err := models.UpdateOneRestaurant(id, body)
+func updateRestaurant(id string, resp *utils.RespMsg, w http.ResponseWriter, r *http.Request) {
+	var body map[string]*string
+	err := json.NewDecoder(r.Body).Decode(&body)
+	if err != nil {
+		fmt.Println(err)
+		resp.Code = http.StatusInternalServerError
+		resp.Message = "server error"
+		w.Write(resp.JSONBytes())
+		return
+	}
+	err = models.UpdateRestaurant(id, body)
 	if err != nil {
 		fmt.Println(err)
 		resp.Code = http.StatusInternalServerError
@@ -61,6 +84,30 @@ func updateOneRestaurant(id string, body map[string]*string, resp *utils.RespMsg
 	return
 }
 
+func createRestaurant(resp *utils.RespMsg, w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+
+	var restaurant models.Restaurant
+	err := json.NewDecoder(r.Body).Decode(&restaurant)
+	if err != nil {
+		resp.Code = http.StatusInternalServerError
+		resp.Message = "create a restaurant failed"
+		w.Write(resp.JSONBytes())
+		return
+	}
+
+	err = models.CreateRestaurant(restaurant)
+	if err != nil {
+		resp.Code = http.StatusInternalServerError
+		resp.Message = "create a restaurant failed"
+		w.Write(resp.JSONBytes())
+		return
+	}
+	resp.Code = http.StatusOK
+	resp.Message = "create a restaurant succeeded"
+	w.Write(resp.JSONBytes())
+}
+
 // Restaurant will handle get/update/delete one restaurant
 func Restaurant(w http.ResponseWriter, r *http.Request) {
 	resp := utils.NewRespMsg()
@@ -69,18 +116,9 @@ func Restaurant(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case http.MethodGet:
-		getOneRestaurant(id, resp, w)
+		getRestaurant(id, resp, w)
 	case http.MethodPut:
-		var body map[string]*string
-		err := json.NewDecoder(r.Body).Decode(&body)
-		if err != nil {
-			fmt.Println(err)
-			resp.Code = http.StatusInternalServerError
-			resp.Message = "server error"
-			w.Write(resp.JSONBytes())
-			return
-		}
-		updateOneRestaurant(id, body, resp, w)
+		updateRestaurant(id, resp, w, r)
 	case http.MethodDelete:
 	default:
 		resp.Code = http.StatusMethodNotAllowed

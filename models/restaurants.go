@@ -50,8 +50,8 @@ func AllRestaurants() ([]Restaurant, error) {
 	return rts, nil
 }
 
-// GetOneRestaurant will return the Restaurant by id
-func GetOneRestaurant(id string) (Restaurant, error) {
+// GetRestaurant will return the Restaurant by id
+func GetRestaurant(id string) (Restaurant, error) {
 	rt := Restaurant{}
 	stmt, err := db.Prepare("SELECT * FROM restaurants WHERE id = ? LIMIT 1")
 	if err != nil {
@@ -76,8 +76,8 @@ func GetOneRestaurant(id string) (Restaurant, error) {
 	return rt, nil
 }
 
-// UpdateOneRestaurant will access database to update the Restaurant by id
-func UpdateOneRestaurant(id string, body map[string]*string) error {
+// UpdateRestaurant will access database to update the Restaurant by id
+func UpdateRestaurant(id string, body map[string]*string) error {
 	stmtIns, err := db.Prepare(`UPDATE restaurants
 		SET name = COALESCE(?, name),
 		address = COALESCE(?, address),
@@ -92,5 +92,23 @@ func UpdateOneRestaurant(id string, body map[string]*string) error {
 		return err
 	}
 
+	return nil
+}
+
+// CreateRestaurant will insert a restaurant into restaurants table
+func CreateRestaurant(r Restaurant) error {
+	stmt, err := db.Prepare("INSERT INTO restaurants (name, address, number) VALUE (?, ?, ?)")
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(r.Name, r.Address, r.Number)
+
+	if err != nil {
+		fmt.Println("create a restaurant failed")
+		return err
+	}
 	return nil
 }
