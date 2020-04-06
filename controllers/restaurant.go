@@ -47,7 +47,7 @@ func getRestaurant(id string, resp *utils.RespMsg, w http.ResponseWriter) {
 	w.Write(resp.JSONBytes())
 }
 
-func updateOneRestaurant(id string, resp *utils.RespMsg, w http.ResponseWriter, r *http.Request) {
+func updateRestaurant(id string, resp *utils.RespMsg, w http.ResponseWriter, r *http.Request) {
 	var body map[string]*string
 	err := json.NewDecoder(r.Body).Decode(&body)
 	if err != nil {
@@ -57,7 +57,7 @@ func updateOneRestaurant(id string, resp *utils.RespMsg, w http.ResponseWriter, 
 		w.Write(resp.JSONBytes())
 		return
 	}
-	err = models.UpdateOneRestaurant(id, body)
+	err = models.UpdateRestaurant(id, body)
 	if err != nil {
 		fmt.Println(err)
 		resp.Code = http.StatusInternalServerError
@@ -104,7 +104,7 @@ func Restaurant(w http.ResponseWriter, r *http.Request) {
 	case http.MethodGet:
 		getRestaurant(id, resp, w)
 	case http.MethodPut:
-		updateOneRestaurant(id, resp, w, r)
+		updateRestaurant(id, resp, w, r)
 	case http.MethodPost:
 		createRestaurant(resp, w, r)
 	case http.MethodDelete:

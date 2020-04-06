@@ -76,8 +76,8 @@ func GetRestaurant(id string) (Restaurant, error) {
 	return rt, nil
 }
 
-// UpdateOneRestaurant will access database to update the Restaurant by id
-func UpdateOneRestaurant(id string, body map[string]*string) error {
+// UpdateRestaurant will access database to update the Restaurant by id
+func UpdateRestaurant(id string, body map[string]*string) error {
 	stmtIns, err := db.Prepare(`UPDATE restaurants
 		SET name = COALESCE(?, name),
 		address = COALESCE(?, address),
