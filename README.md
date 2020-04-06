@@ -10,9 +10,9 @@ POST /api/restaurants/:id  # Update restaurant
 
 ## TODO
 - [x] Get all restaurants
-- [ ] Get a restaurant
+- [x] Get a restaurant
 - [ ] Create a restaurant
-- [ ] Update a restaurant
+- [x] Update a restaurant
 
 ## Development
 Setup docker container

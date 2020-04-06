@@ -47,8 +47,17 @@ func getRestaurant(id string, resp *utils.RespMsg, w http.ResponseWriter) {
 	w.Write(resp.JSONBytes())
 }
 
-func updateOneRestaurant(id string, body map[string]*string, resp *utils.RespMsg, w http.ResponseWriter) {
-	err := models.UpdateOneRestaurant(id, body)
+func updateOneRestaurant(id string, resp *utils.RespMsg, w http.ResponseWriter, r *http.Request) {
+	var body map[string]*string
+	err := json.NewDecoder(r.Body).Decode(&body)
+	if err != nil {
+		fmt.Println(err)
+		resp.Code = http.StatusInternalServerError
+		resp.Message = "server error"
+		w.Write(resp.JSONBytes())
+		return
+	}
+	err = models.UpdateOneRestaurant(id, body)
 	if err != nil {
 		fmt.Println(err)
 		resp.Code = http.StatusInternalServerError
@@ -61,41 +70,11 @@ func updateOneRestaurant(id string, body map[string]*string, resp *utils.RespMsg
 	return
 }
 
-// Restaurant will handle get/update/delete one restaurant
-func Restaurant(w http.ResponseWriter, r *http.Request) {
-	resp := utils.NewRespMsg()
-	path := strings.Split(r.URL.Path, "/")
-	id := path[len(path)-1]
-
-	switch r.Method {
-	case http.MethodGet:
-		getRestaurant(id, resp, w)
-	case http.MethodPut:
-		var body map[string]*string
-		err := json.NewDecoder(r.Body).Decode(&body)
-		if err != nil {
-			fmt.Println(err)
-			resp.Code = http.StatusInternalServerError
-			resp.Message = "server error"
-			w.Write(resp.JSONBytes())
-			return
-		}
-		updateOneRestaurant(id, body, resp, w)
-	case http.MethodDelete:
-	default:
-		resp.Code = http.StatusMethodNotAllowed
-		w.Write(resp.JSONBytes())
-	}
-
-}
-
-// CreateRestaurant will create a new restaurant
-func CreateRestaurant(w http.ResponseWriter, r *http.Request) {
+func createRestaurant(resp *utils.RespMsg, w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 
 	var restaurant models.Restaurant
 	err := json.NewDecoder(r.Body).Decode(&restaurant)
-	resp := utils.NewRespMsg()
 	if err != nil {
 		resp.Code = http.StatusInternalServerError
 		resp.Message = "create a restaurant failed"
@@ -113,4 +92,25 @@ func CreateRestaurant(w http.ResponseWriter, r *http.Request) {
 	resp.Code = http.StatusOK
 	resp.Message = "create a restaurant succeeded"
 	w.Write(resp.JSONBytes())
+}
+
+// Restaurant will handle get/update/delete one restaurant
+func Restaurant(w http.ResponseWriter, r *http.Request) {
+	resp := utils.NewRespMsg()
+	path := strings.Split(r.URL.Path, "/")
+	id := path[len(path)-1]
+
+	switch r.Method {
+	case http.MethodGet:
+		getRestaurant(id, resp, w)
+	case http.MethodPut:
+		updateOneRestaurant(id, resp, w, r)
+	case http.MethodPost:
+		createRestaurant(resp, w, r)
+	case http.MethodDelete:
+	default:
+		resp.Code = http.StatusMethodNotAllowed
+		w.Write(resp.JSONBytes())
+	}
+
 }
