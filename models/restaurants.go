@@ -96,7 +96,7 @@ func UpdateRestaurant(id string, body map[string]*string) error {
 }
 
 // CreateRestaurant will insert a restaurant into restaurants table
-func CreateRestaurant(name, address, number string) error {
+func CreateRestaurant(r Restaurant) error {
 	stmt, err := db.Prepare("INSERT INTO restaurants (name, address, number) VALUE (?, ?, ?)")
 	if err != nil {
 		fmt.Println(err)
@@ -104,7 +104,8 @@ func CreateRestaurant(name, address, number string) error {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(name, address, number)
+	_, err = stmt.Exec(r.Name, r.Address, r.Number)
+
 	if err != nil {
 		fmt.Println("create a restaurant failed")
 		return err

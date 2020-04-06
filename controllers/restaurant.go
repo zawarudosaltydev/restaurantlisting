@@ -82,7 +82,7 @@ func createRestaurant(resp *utils.RespMsg, w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	err = models.CreateRestaurant(restaurant.Name, restaurant.Address, restaurant.Number.String)
+	err = models.CreateRestaurant(restaurant)
 	if err != nil {
 		resp.Code = http.StatusInternalServerError
 		resp.Message = "create a restaurant failed"
